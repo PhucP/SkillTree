@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.EventSystems;
 
-public class Skill : MonoBehaviour
+public class Skill : MonoBehaviour, IPointerClickHandler
 {
     public string tile;
     public string description;
@@ -12,10 +13,12 @@ public class Skill : MonoBehaviour
     public int level;
     public List<Skill> listSkillConnect;
     public bool isActive;
+    public float coolDoown;
 
     [SerializeField] private TMP_Text _skillTile;
     [SerializeField] private TMP_Text _skillDescription;
     [SerializeField] private Transform lines;
+    public GameObject _pointer;
 
     private void Start()
     {
@@ -33,7 +36,7 @@ public class Skill : MonoBehaviour
 
     public void Upgrade()
     {
-        if(SkillManager.Instance.skillPoint <= 0 || level >= maxUpgrade) return;
+        if (SkillManager.Instance.skillPoint <= 0 || level >= maxUpgrade) return;
 
         level++;
         SkillManager.Instance.skillPoint--;
@@ -54,9 +57,18 @@ public class Skill : MonoBehaviour
 
     public void ChangeSkillTile()
     {
+        if (!IsPlayScene()) return;
+
         string process = level + "/" + maxUpgrade + " " + tile;
         _skillTile.SetText(process);
         _skillDescription.SetText("Description of " + tile);
+    }
+
+    private bool IsPlayScene()
+    {
+        if (_skillDescription == null || _skillTile == null)
+            return false;
+        return true;
     }
 
     private void CreateLineRendererToSkill(Transform targetSkill)
@@ -76,5 +88,11 @@ public class Skill : MonoBehaviour
 
         lineRenderer.SetPosition(0, transform.position);
         lineRenderer.SetPosition(1, targetSkill.position);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        UIManager.Instance.ChangeCurrentSkill(this);
+        _pointer.SetActive(true);
     }
 }
