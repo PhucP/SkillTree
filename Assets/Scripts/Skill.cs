@@ -3,15 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.EventSystems;
+using System.Linq;
+using UnityEngine.UI;
 
-public class Skill : MonoBehaviour, IPointerClickHandler
+public class Skill : MonoBehaviour
 {
+    public List<ImageData> ListImage;
     public string tile;
     public string description;
     public int cost;
     public int maxUpgrade;
     public int level;
     public List<Skill> listSkillConnect;
+    public Skill PreviousSkill;
+    public bool IsUpgraded;
     public bool isActive;
     public float coolDoown;
 
@@ -19,6 +24,13 @@ public class Skill : MonoBehaviour, IPointerClickHandler
     [SerializeField] private TMP_Text _skillDescription;
     [SerializeField] private Transform lines;
     public GameObject _pointer;
+
+    private Image sprite;
+
+    private void Awake()
+    {
+        sprite = GetComponent<Image>();
+    }
 
     private void Start()
     {
@@ -29,6 +41,7 @@ public class Skill : MonoBehaviour, IPointerClickHandler
     {
         isActive = false;
         level = 0;
+        IsUpgraded = false;
 
         ChangeSkillTile();
     }
@@ -53,6 +66,17 @@ public class Skill : MonoBehaviour, IPointerClickHandler
         }
 
         ChangeSkillTile();
+    }
+
+    public void UpgradeInPlayScene()
+    {
+        if (level >= maxUpgrade) return;
+
+        if (PreviousSkill == null || PreviousSkill.IsUpgraded)
+        {
+            level++;
+            IsUpgraded = true;
+        }
     }
 
     public void ChangeSkillTile()
@@ -90,9 +114,21 @@ public class Skill : MonoBehaviour, IPointerClickHandler
         lineRenderer.SetPosition(1, targetSkill.position);
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    // public void OnPointerClick(PointerEventData eventData)
+    // {
+    //     UIManager.Instance.ChangeCurrentSkill(this);
+    //     if (!_pointer.activeInHierarchy)
+    //     {
+    //         _pointer.SetActive(true);
+    //         sprite.sprite = GetSprite(ImageType.CHOOSE);
+    //     }
+    // }
+
+    private Sprite GetSprite(ImageType imageType)
     {
-        UIManager.Instance.ChangeCurrentSkill(this);
-        _pointer.SetActive(true);
+        // var imageData = ListImage.FirstOrDefault(image => image.Type == imageType);
+        // return imageData.Image;
+        return null;
     }
 }
+

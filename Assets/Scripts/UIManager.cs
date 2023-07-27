@@ -17,9 +17,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TMP_Text _coolDown;
     [SerializeField] private Button _upgrade;
 
+    [Header("Image Source")]
+    public List<ImageData> ListImageSource;
 
-    private Skill _currentSkill;
-    public Skill CurrentSkill
+
+    private LevelSkill _currentSkill;
+    public LevelSkill CurrentSkill
     {
         get => _currentSkill;
         set => _currentSkill = value;
@@ -38,9 +41,9 @@ public class UIManager : MonoBehaviour
 
     public void SetInfor()
     {
-        _description.SetText(_currentSkill.description);
-        _cost.SetText(_currentSkill.cost.ToString());
-        _coolDown.SetText(_currentSkill.coolDoown.ToString());
+        _description.SetText("NONE");
+        _cost.SetText(_currentSkill.Cost.ToString());
+        _coolDown.SetText(_currentSkill.CoolDown.ToString());
     }
 
     private void Singleton()
@@ -52,10 +55,14 @@ public class UIManager : MonoBehaviour
         Instance = this;
     }
 
-    public void ChangeCurrentSkill(Skill skill)
+    public void ChangeCurrentSkill(LevelSkill skill)
     {
-        if(_currentSkill != null) _currentSkill._pointer.SetActive(false);
         _currentSkill = skill;
         SetInfor();
+    }
+
+    public void UpgradeSkill()
+    {
+        _currentSkill.Upgrade();
     }
 }
