@@ -4,15 +4,18 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.EventSystems;
 
-public class LevelSkill : MonoBehaviour, IPointerClickHandler
+public class LevelSkill : MonoBehaviour
 {
     [Header("Infor")]
     public int Cost;
     public float CoolDown;
+    public Skill1Enum skill1Enum;
 
     [Header("Images")]
     public List<ImageData> SkillImages;
     public List<ImageData> LineImages;
+
+    public ImageType CurrentImageType;
 
     private SkillController skillController;
 
@@ -23,23 +26,47 @@ public class LevelSkill : MonoBehaviour, IPointerClickHandler
 
     private void Start()
     {
-
+        CurrentImageType = ImageType.NONUPGRADE;
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public void OnClick()
     {
-        UIManager.Instance.CurrentSkill = this;
-        ChangeImage(ImageType.CHOOSE);
+        LevelSkill currentSkill = UIManager.Instance.CurrentSkill;
+        if (currentSkill != this)
+        {
+            if(currentSkill != null)
+            {
+                currentSkill.UnselectImage();
+            }
+            ChangeImage(ImageType.CHOOSE, SkillImages);
+            MovePointer();
+
+            UIManager.Instance.CurrentSkill = this;
+            UIManager.Instance.SetInfor();
+        }
     }
 
-    public void ChangeImage(ImageType imageType)
+    public void MovePointer()
     {
-        
+        Vector3 pos = this.GetComponent<RectTransform>().anchoredPosition;
+        UIManager.Instance.SetPointer(pos, skillController.gameObject.transform);
     }
 
-    private GameObject GetImage(List<ImageData> listImage, ImageType imageType)
+    public void UnselectImage()
     {
-        return listImage.FirstOrDefault(image => image.Type == imageType).Image;
+        ChangeImage(CurrentImageType, SkillImages);
+    }
+
+    public void ChangeImage(ImageType imageType, List<ImageData> listImage)
+    {
+        foreach (var image in listImage)
+        {
+            if (image.Type == imageType)
+            {
+                image.Image.SetActive(true);
+            }
+            else image.Image.SetActive(false);
+        }
     }
 
     public void Upgrade()

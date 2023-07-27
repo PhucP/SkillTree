@@ -11,6 +11,20 @@ public class SkillController : MonoBehaviour
     public List<LevelSkill> ListLevel;
     public int CurrentLevel;
     public LevelSkill CurrentLevelSkill;
+
+    private void Start() {
+        Init();
+    }
+
+    private void Init()
+    {
+
+    }
+
+    public void LevelUp()
+    {
+        CurrentLevel++;
+    }
 }
 
 

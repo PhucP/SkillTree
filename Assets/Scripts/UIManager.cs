@@ -20,6 +20,10 @@ public class UIManager : MonoBehaviour
     [Header("Image Source")]
     public List<ImageData> ListImageSource;
 
+    [Header("Pointer")]
+    public GameObject Pointer;
+    [SerializeField] private float _hight;
+
 
     private LevelSkill _currentSkill;
     public LevelSkill CurrentSkill
@@ -64,5 +68,13 @@ public class UIManager : MonoBehaviour
     public void UpgradeSkill()
     {
         _currentSkill.Upgrade();
+    }
+
+    public void SetPointer(Vector3 pos, Transform parent)
+    {
+        Pointer.SetActive(false);
+        Pointer.transform.SetParent(parent);
+        Pointer.GetComponent<RectTransform>().anchoredPosition = new Vector2(pos.x, pos.y + _hight);
+        Pointer.SetActive(true);
     }
 }
